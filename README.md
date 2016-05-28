@@ -1,0 +1,2 @@
+# Android-Service-DownLoad
+android实现Service下载文件，Notification进度条显示下载进度的DEMO,Notification DownLoad
