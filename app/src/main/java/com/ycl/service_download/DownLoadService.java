@@ -4,6 +4,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Environment;
 import android.os.IBinder;
 import android.os.SystemClock;
@@ -50,13 +51,20 @@ public class DownLoadService extends Service {
         int smallIcon = R.drawable.xc_smaillicon;
         String ticker = "正在更新快图浏览";
         //实例化工具类，并且调用接口
-        NotifyUtil notify7 = new NotifyUtil(this, 7);
-        notify7.notify_progress(rightPendIntent, smallIcon, ticker, "快图浏览升级程序", "正在下载中",
+        currentNotify= new NotifyUtil(this, 7);
+        currentNotify.notify_progress(rightPendIntent, smallIcon, ticker, "快图浏览升级程序", "正在下载中",
                 false, false, false, download_url, savePath, new NotifyUtil.DownLoadListener() {
                     @Override
                     public void OnSuccess(File file) {
                         mFile=file;
                         DownLoadService.this.stopSelf();
+                        Intent intent = new Intent();
+                        Bundle bundle = new Bundle();
+                        bundle.putString(MyBroadCast.DOWNLOAD_TYPE,"下载");
+                        bundle.putSerializable(MyBroadCast.DOWNLOAD_FILE_TYPE,mFile);
+                        intent.putExtras(bundle);
+                        intent.setAction("com.ycl.service_download.MyBroadCast");
+                        getApplication().sendBroadcast(intent);
                     }
 
                     @Override
@@ -64,10 +72,12 @@ public class DownLoadService extends Service {
 
                     }
                 });
-        currentNotify = notify7;
+
         return super.onStartCommand(intent, flags, startId);
 
     }
+
+
 
 
 
